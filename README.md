@@ -2,7 +2,11 @@
 
 Smart publication for Meteor.
 
-This package lets you easily create publications which publish data based on your SimpleSchema schema.
+#### [Watch 5-min Intro Video](https://www.youtube.com/watch?v=WgO6uUO3L4s&feature=youtu.be)
+
+This package lets you easily create publications which publish data based on your SimpleSchema schema. 
+
+In other words, it's a little like an `autopublish` that first looks at your schema before deciding what should or shouldn't be published. 
 
 The two main features are:
 
