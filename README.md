@@ -2,6 +2,13 @@
 
 Smart publication for Meteor.
 
+This package lets you easily create publications which publish data based on your SimpleSchema schema.
+
+The two main features are:
+
+- **Public/private** fields: specify which fields should be published.
+- **Joins**: define publication joins in your schema (note: not reactive at this time). 
+
 ### Install
 
 ```

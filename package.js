@@ -10,9 +10,8 @@ Package.onUse(function (api) {
   api.versionsFrom("METEOR@1.0");
 
   api.use([
-    'meteor-base',
     'mongo',
-    'ecmascript',
+    'ecmascript@0.3.0',
     'check',
     'aldeed:simple-schema@1.5.3',
     'aldeed:collection2@2.8.0',
