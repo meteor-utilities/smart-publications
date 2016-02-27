@@ -13,16 +13,19 @@ Package.onUse(function (api) {
     'mongo',
     'ecmascript@0.1.6',
     'check',
+    'modules',
+    'underscore',
     'aldeed:simple-schema@1.5.3',
     'aldeed:collection2@2.8.0',
-    'tmeasday:publish-counts@0.7.3'
+    'tmeasday:publish-counts@0.7.3',
+    // 'peerlibrary:reactive-publish@0.2.0'
   ]);
 
   api.addFiles([
     'lib/smart-publications.js'
   ], ['client', 'server']);
 
-  api.addFiles([
-  ], ['server']);
+  api.mainModule("lib/export.js", ["client", "server"]);
+
 
 });
