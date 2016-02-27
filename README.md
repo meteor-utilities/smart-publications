@@ -29,33 +29,35 @@ Tasks = new Mongo.Collection("tasks");
 const tasksSchema = new SimpleSchema({
   _id: {
     type: String,
-    public: true
+    publish: true
   },
   text: {
     type: String,
-    public: true
+    publish: true
   },
   createdAt: {
     type: Date,
-    public: true
+    publish: true
   },
-  owner: {
+  userId: {
     type: String,
-    public: true,
+    publish: true,
     join: {
-      collection: function () {return Meteor.users}
+      collection: function () {return Meteor.users},
+      fields: ['_id', 'username']
     }
   },
   username: {
     type: String,
-    public: false
+    publish: false
   }
 });
 Tasks.attachSchema(tasksSchema);
 ```
 
-- `public`: `true` or `false`, defines if a field is published or not.
+- `publish`: `true` or `false`, defines if a field is published or not.
 - `join.collection`: either a collection's name if it's a global object, or a function that returns the collection to join with. 
+- `join.fields`: a list of fields to publish. If not specified, will default to all public fields.
 
 Note: fields possessing a `join` property should contain either a single `_id` or an array of `_id`s. 
 
@@ -66,3 +68,21 @@ Note: fields possessing a `join` property should contain either a single `_id` o
 ```js
 Tasks.publish("myPublicationName");
 ```
+
+#### Using with ListContainer
+
+If you're using the [ListContainer](https://github.com/meteor-utilities/react-list-container) package, you can also specify the `joinAs` property on each join to indicate which property you'd like the joined document to be available under:
+
+```js
+userId: {
+  type: String,
+  publish: true,
+  join: {
+    collection: function () {return Meteor.users},
+    fields: ['_id', 'username'],
+    joinAs: 'owner'
+  }
+}
+```
+
+You can then pass `myCollection.simpleSchema.getJoins()` as the value for `ListContainer`'s `joins` argument.
