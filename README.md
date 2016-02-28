@@ -19,7 +19,7 @@ You can use a Git submodule, or else (my suggestion) use the [PACKAGE_DIRS](http
 
 ### Schema Definition
 
-In order for the package to work, your schema field definitions need to include the special `publish` and `joins` properties.
+In order to use this package, your schema field definitions need to include the special `publish` and `joins` properties.
 
 ```js
 Tasks = new Mongo.Collection("tasks");
@@ -54,6 +54,10 @@ const tasksSchema = new SimpleSchema({
       limit: 5
     }
   },
+  status: {
+    type: String,
+    publish: function (user) {return user.admin === true}
+  },
   username: {
     type: String,
     publish: false
@@ -62,23 +66,64 @@ const tasksSchema = new SimpleSchema({
 Tasks.attachSchema(tasksSchema);
 ```
 
-#### `publish` (boolean)
+#### `publish` (boolean|function)
 
-Defines if a field is published or not.
+Defines if a field is published or not. Either a boolean, or a function that takes in a user and returns a boolean. 
+
+If a boolean is used, the result will be the same for all users. If a function is used, it will expect the user to be passed to it. If no user is passed, the field will not be published. 
+
+If the `publish` property is not specified, the field will be considered **unpublished** by default.
 
 #### `join` (object)
 
 An object with the following properties:
 
 - `collection`: either a collection's name if it's a global object, or a function that returns the collection to join with. 
-- `fields`: (optional) a list of fields to publish. If not specified, will default to all public fields.
+- `fields`: (optional) a list of fields to publish for the joined cursor. If not specified, will default to all public fields available to the current user. Note that if you manually specify a field here, it will be published whether it's otherwise available to the user or not. 
 - `limit`: (optional) a limit of how many documents to join.  
 
 Note: fields possessing a `join` property should contain either a single `_id` or an array of `_id`s. 
 
 ### Methods
 
-This package also adds the following methods to the `Mongo.Collection` prototype.
+Out of the box this package doesn't do anything, it only adds the following methods to the `Mongo.Collection` prototype:
+
+#### `Collection.getPublishedFields(user)`
+
+Returns an array containing the names of all fields that can be published.
+
+- `user` (object): optionally, a `user` argument can be passed to narrow the list down to fields that are available to a specific user (if `publish` properties are using functions). 
+
+```js
+Posts.getPublishedFields(Meteor.user());
+```
+
+#### `Collection.getJoins(checkPublish = true, user)`
+
+Returns an array containing join objects for the collection, optionally narrowed down to a specific user. 
+
+- `checkPublish` (boolean): whether to check the fields' `publish` values or ignore them (defaults to `true`). If you want to use the package's "join" feature but don't care about the published/unpublished aspect, just set this to `false`. 
+- `user` (object): if provided, will be passed to the `publish` functions of each join field to narrow down joins to those available to a specific user. 
+
+```js
+Posts.getJoins();
+```
+
+#### `Collection.getCursorJoins(cursor, checkPublish = true, user)`
+
+For a given collection and cursor, returns an array of cursors containing all join data.
+
+- `cursor` (object) [required]: the cursor on which to look up joins. 
+- `checkPublish` (boolean): whether to check the fields' `publish` values or ignore them (defaults to `true`).
+- `user` (object): optionally, a `user` argument can also be passed to narrow the join down to fields that are available to a specific user (if `publish` properties are using functions). 
+
+```js
+Meteor.publish('posts', function (postsLimit) {
+  const cursor = Posts.find({}, {limit: postsLimit});
+  const joinedCursors = Posts.getCursorJoins(cursor);
+  return [cursor].concat(joinedCursors);
+});
+```
 
 #### `Collection.smartPublish(publicationName, options)` (server)
 
@@ -92,18 +137,6 @@ You can also pass an optional `options` argument with the following properties:
 
 - `callback`: a function that will get called on the publication's `terms` argument. Useful to perform checks based on the current user's `_id` (available as `terms.currentUserId`). The callback function should return an object with `selector` and `options` properties.
 - `limit`: limit the maximum number of items the publication can return at once. 
-
-#### `Collection.getPublishedFields()`
-
-Returns an array containing the names of all fields where `publish` is `true`.
-
-#### `Collection.getJoins()`
-
-Returns an array containing join objects for the collection.
-
-#### `Collection.getCursorJoins(cursor)`
-
-For a given cursor, returns an array of cursors containing all join data.
 
 ### Using with ListContainer
 
