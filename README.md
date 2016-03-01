@@ -131,8 +131,10 @@ The publication also publishes a count of total results for the current argument
 
 You can also pass an optional `options` argument with the following properties:
 
-- `callback`: a function that will get called on the publication's `terms` argument. Useful to perform checks based on the current user's `_id` (available as `terms.currentUserId`). The callback function should return an object with `selector` and `options` properties.
-- `limit`: limit the maximum number of items the publication can return at once. 
+- `callback`: a function that will get called on the publication's `terms` argument. Useful to perform checks based on the current user's `_id` (available as `terms.currentUserId`). The callback function should return an object with `selector` and `options` properties. If the callback throws an error, the publication will return an empty array, making it a good place for authentication and authorization.
+- `limit`: limit the maximum number of items the publication can return at once.
+
+**Note: this method does not currently support foreign joins (e.g. getting all comments belonging to a post).**
 
 ### Using with ListContainer
 
