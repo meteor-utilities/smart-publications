@@ -80,6 +80,15 @@ An object with the following properties:
 
 Note: fields possessing a `join` property should contain either a single `_id` or an array of `_id`s. 
 
+### Local vs Foreign Joins
+
+There are two types of joins: 
+
+- **Local** joins, such as a post that has a `categoriesIDs` property containing a list of category IDs. In this case, references to the related objects are stored *locally* on the document. 
+- **Foreign** joins, such as multiple comments all pointing back to the same post via their `userId` property. In this case, references to the post are stored *remotely* on each comment itself. 
+
+Note that at this time, this package only supports **local** joins, since you can't easily express foreign joins on a collection's schema.
+
 ### Methods
 
 Out of the box this package doesn't do anything, it only adds the following methods to the `Mongo.Collection` prototype:

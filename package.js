@@ -1,7 +1,7 @@
 Package.describe({
   name: "utilities:smart-publications",
   summary: "Smart publications",
-  version: "0.1.2",
+  version: "0.1.3",
   git: "https://github.com/meteor-utilities/smart-publications.git"
 });
 
@@ -18,7 +18,7 @@ Package.onUse(function (api) {
     'aldeed:simple-schema@1.5.3',
     'aldeed:collection2@2.8.0',
     'tmeasday:publish-counts@0.7.3',
-    // 'peerlibrary:reactive-publish@0.2.0'
+    'peerlibrary:reactive-publish@0.2.0'
   ]);
 
   api.addFiles([
