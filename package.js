@@ -1,7 +1,7 @@
 Package.describe({
   name: "utilities:smart-publications",
   summary: "Smart publications",
-  version: "0.1.3",
+  version: "0.1.4",
   git: "https://github.com/meteor-utilities/smart-publications.git"
 });
 
