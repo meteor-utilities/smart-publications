@@ -1,13 +1,13 @@
 Package.describe({
   name: "utilities:smart-publications",
   summary: "Smart publications",
-  version: "0.1.4",
+  version: "0.2.0",
   git: "https://github.com/meteor-utilities/smart-publications.git"
 });
 
 Package.onUse(function (api) {
 
-  api.versionsFrom("METEOR@1.3-beta.11");
+  api.versionsFrom("METEOR@1.4.4.1");
 
   api.use([
     'mongo',
@@ -15,10 +15,9 @@ Package.onUse(function (api) {
     'check',
     'modules',
     'underscore',
-    'aldeed:simple-schema@1.5.3',
-    'aldeed:collection2@2.8.0',
-    'tmeasday:publish-counts@0.7.3',
-    'peerlibrary:reactive-publish@0.2.0'
+    'aldeed:collection2-core@2.0.0',
+    'tmeasday:publish-counts@0.8.0',
+    'peerlibrary:reactive-publish@0.3.0'
   ]);
 
   api.addFiles([
